@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A package which provides a state machine, along with abstractions for consuming that machine.",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest ",
     "build": "tsc",
