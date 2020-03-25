@@ -27,12 +27,8 @@ body {
   top: 5px;
 }
 
-.toggle-btn--off {
-
-}
-
-.toggle-btn--on {
-
+.toggle-btn--hovered {
+  background-color: #555;
 }
 
 .toggle-btn__slider--off {
