@@ -15,15 +15,13 @@ let previousState: ToggleState
 export function setupToggleBtn() {
   toggleBtn?.addEventListener('click', () => triggerEvent(ToggleEvent.Click))
 
-  
+  // Apply classes for the current state
+  applyClassesForState(toggleFsm.state)
 }
 
 function triggerEvent(event: ToggleEvent) {
-  // For now we'll track the previous state, as we need to
-  // remove classes from that state before applying the next
   previousState = toggleFsm.state
 
-  // Then transition and apply
   toggleFsm.transition(event)
   applyClassesForState(toggleFsm.state)
 }
