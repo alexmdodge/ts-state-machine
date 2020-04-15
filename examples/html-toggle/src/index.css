@@ -31,10 +31,15 @@ body {
   background-color: #555;
 }
 
+.toggle-btn--on {
+  background-color: rgb(13, 80, 75);
+}
+
 .toggle-btn__slider--off {
   left: 5px
 }
 
 .toggle-btn__slider--on {
+  background-color: lightseagreen;
   right: 5px;
 }

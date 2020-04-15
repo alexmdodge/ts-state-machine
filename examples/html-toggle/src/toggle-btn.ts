@@ -11,60 +11,75 @@ const toggleFsm = createToggleFsm()
 const toggleBtn = document.querySelector('.toggle-btn')
 const toggleBtnSlider = document.querySelector('.toggle-btn__slider')
 
-let previousState: ToggleState
-
 export function setupToggleBtn() {
-  toggleBtn?.addEventListener('click', () => triggerEvent(ToggleEvent.Click))
-  toggleBtn?.addEventListener('mouseover', () => triggerEvent(ToggleEvent.Mouse_Over))
-  toggleBtn?.addEventListener('mouseoff', () => triggerEvent(ToggleEvent.Mouse_Off))
+  toggleBtn?.addEventListener('click', () => {
+    // Maybe we check if disabled here first, then we could transition
+    // toggleFsm.transition(ToggleEvent.Disabled)
+    toggleFsm.transition(ToggleEvent.Click)
+  })
+  toggleBtn?.addEventListener('mouseover', () => toggleFsm.transition(ToggleEvent.Mouse_Over))
+  toggleBtn?.addEventListener('mouseout', () => toggleFsm.transition(ToggleEvent.Mouse_Off))
 
   // Apply classes for the current state
-  applyClassesForState(toggleFsm.previousState, toggleFsm.state)
+  onStateChanged(toggleFsm.previousState, toggleFsm.state)
 
-  toggleFsm.on(EmitterFsmEvents.State_Changed, (previousState, currentState) => {
-    applyClassesForState(previousState, state)
-  })
+  toggleFsm.on(EmitterFsmEvents.State_Changed, onStateChanged)
 }
 
-function triggerEvent(event: ToggleEvent) {
-  previousState = toggleFsm.state
+function onStateChanged(previousState: ToggleState, currentState: ToggleState) {
+  const applyNextClassesForEl = (el: Element | null, prevClass: string | null, nextClass: string | null) => {
+    if (prevClass) {
+      el?.classList.remove(prevClass)
+    }
+    if (nextClass) {
+      el?.classList.add(nextClass)
+    }
+  }
 
-  toggleFsm.transition(event)
-  
+  // Add any additional elements here
+  applyNextClassesForEl(
+    toggleBtnSlider,
+    getSliderClassesForState(previousState),
+    getSliderClassesForState(currentState)
+  )
+
+  applyNextClassesForEl(
+    toggleBtn,
+    getButtonClassesForState(previousState),
+    getButtonClassesForState(currentState)
+  )
+
+  // Need to do any specific handling on a state?
+  switch(currentState) {
+    case ToggleState.Off: break
+    case ToggleState.On: break
+    case ToggleState.Hovered: break
+    default:
+  }
 }
 
-function applyClassesForState(previousState: ToggleState, currentState: ToggleState) {
-  const previousSliderClass = getSliderClassesForState(previousState)
-  if (previousSliderClass.length > 0) {
-    toggleBtnSlider?.classList.remove(previousSliderClass)
-  }
-  const nextSliderClass = getSliderClassesForState(currentState)
-  if (nextSliderClass.length > 0) {
-    toggleBtnSlider?.classList.add(nextSliderClass)
-  }
-
-  const previousToggleClass = getToggleClassesForState(previousState)
-  if (previousToggleClass.length > 0) {
-    toggleBtn?.classList.remove(previousToggleClass)
-  }
-  const nextToggleClass = getToggleClassesForState(currentState)
-  if (nextToggleClass.length > 0) {
-    toggleBtn?.classList.add(nextToggleClass)
-  }
+enum ToggleSliderClasses {
+  On = 'toggle-btn__slider--on',
+  Off = 'toggle-btn__slider--off'
 }
 
-function getSliderClassesForState(state: ToggleState): string {
+function getSliderClassesForState(state: ToggleState): string | null {
   return {
-    [ToggleState.On]: 'toggle-btn__slider--on',
-    [ToggleState.Off]: 'toggle-btn__slider--off',
-    [ToggleState.Hovered]: ''
+    [ToggleState.On]: ToggleSliderClasses.On,
+    [ToggleState.Off]: ToggleSliderClasses.Off,
+    [ToggleState.Hovered]: ToggleSliderClasses.Off
   }[state]
 }
 
-function getToggleClassesForState(state: ToggleState): string {
+enum ToggleButtonClasses {
+  Hovered = 'toggle-btn--hovered',
+  On = 'toggle-btn--on'
+}
+
+function getButtonClassesForState(state: ToggleState): string | null {
   return {
-    [ToggleState.On]: '',
-    [ToggleState.Off]: '',
-    [ToggleState.Hovered]: '.toggle-btn--hovered'
+    [ToggleState.On]: ToggleButtonClasses.On,
+    [ToggleState.Off]: null,
+    [ToggleState.Hovered]: ToggleButtonClasses.Hovered
   }[state]
 }
