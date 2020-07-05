@@ -6,14 +6,14 @@ import {
 } from './toggle-fsm'
 import { EmitterFsmEvents } from '../../../lib/services/EmitterFsmTypes'
 
-
+// Create our FSM and retrieve our page elements
 
 const toggleFsm = createToggleFsm()
 
 const toggleBtn = document.querySelector('.toggle-btn')
 const toggleBtnSlider = document.querySelector('.toggle-btn__slider')
 
-
+// This function gets run when our application starts up
 
 export function setupToggleBtn() {
     // Apply classes for the current state, not that we could bring this
